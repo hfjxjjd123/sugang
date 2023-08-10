@@ -3,6 +3,7 @@ use tokio::time::Duration;
 use std::fs::File;
 use std::io::Write;
 use image::*;
+use thirtyfour::ElementRect;
 
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
@@ -102,9 +103,7 @@ async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
 
     let canvas_intro = driver.find(By::Id("TmtViewer")).await?;
     let screenshot_data = canvas_intro.screenshot_as_png().await?;
-
-    // Load the screenshot image using the image crate.
-    // let screenshot_image = image::load(Cursor::new(screenshot_data), image::ImageFormat::Png).unwrap();
+    let canvas_location = canvas_intro.rect().await?;
 
     let mut file = File::create("screenshot.png")?;
     file.write_all(&screenshot_data)?;
@@ -112,13 +111,15 @@ async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
 
     // Analyze the image to determine the X and Y coordinates of the element to click.
     let (x, y) = analysis_first_canvas();
+    if x==0 && y==0{
+        return Err(WebDriverError::CustomError("image analysis failed".to_owned()));
+    }
+    let (absolute_x, absolute_y) = get_button_location(canvas_location, x, y);
 
     // Simulate a click at the identified X and Y coordinates.
-    let canvas_pixel = canvas_intro.rect().await?.(x,y);
-
     driver
     .action_chain()
-    .move_to(canvas_pixel.0, canvas_pixel.1)
+    .move_to(absolute_x , absolute_y)
     .click()
     .perform()
     .await?;
@@ -127,7 +128,6 @@ async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
 }
 
 fn analysis_first_canvas()->(u32, u32){
-    let mut exit = false;
     let screenshot_path = "screenshot.png";
     let screenshot_image = image::open(screenshot_path);
 
@@ -148,8 +148,10 @@ fn analysis_first_canvas()->(u32, u32){
     }
 }
 
-// Simulate a click at the (x, y) position using WebDriver.
-            // You will need to use WebDriver's native methods to send mouse events.
-            // This might involve executing JavaScript code to trigger a click event.
+fn get_button_location(canvas_location: ElementRect, x: u32, y: u32)->(i64, i64){
 
-            // Break the loop after the first match.
+    let canvas_pixel_x = (canvas_location.x) as i64 + x as i64;
+    let canvas_pixel_y = (canvas_location.y) as i64 + y as i64;
+
+    (canvas_pixel_x, canvas_pixel_y)
+}
