@@ -5,13 +5,20 @@ use std::io::Write;
 use image::*;
 use thirtyfour::ElementRect;
 
+const STEP0_WIDTH: f64 = 0.9565;
+const STEP0_HEIGHT: f64 = 0.064;
+
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
-    
-    one_cycle().await?;
+    // one_cycle().await?;
+
+    let (x,y) = get_button_location();
+    println!("{:?}, {:?}", x, y);
 
     Ok(())
 }
+
+// 660/690 16/250
 
 async fn one_cycle() -> WebDriverResult<()> {
     let driver: WebDriver = start_driver().await?;
@@ -96,9 +103,7 @@ async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     let iframe1 = driver.query(By::Id("ContentFrame")).first().await?;
     iframe1.wait_until().displayed().await?;
     driver.enter_frame(0).await?;
-
     driver.enter_frame(0).await?;
-
     driver.enter_frame(0).await?;
 
     let canvas_intro = driver.find(By::Id("TmtViewer")).await?;
@@ -110,11 +115,12 @@ async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
 
 
     // Analyze the image to determine the X and Y coordinates of the element to click.
-    let (x, y) = analysis_first_canvas();
-    if x==0 && y==0{
-        return Err(WebDriverError::CustomError("image analysis failed".to_owned()));
-    }
-    let (absolute_x, absolute_y) = get_button_location(canvas_location, x, y);
+    // let (x, y) = analysis_first_canvas();
+    // if x==0 && y==0{
+    //     return Err(WebDriverError::CustomError("image analysis failed".to_owned()));
+    // }
+    let (x,y) = get_button_location();
+    let (absolute_x, absolute_y) = get_absolute_pixel(canvas_location, x, y);
 
     // Simulate a click at the identified X and Y coordinates.
     driver
@@ -148,10 +154,21 @@ fn analysis_first_canvas()->(u32, u32){
     }
 }
 
-fn get_button_location(canvas_location: ElementRect, x: u32, y: u32)->(i64, i64){
+fn get_button_location() -> (i64, i64){
+    let screenshot_path = "screenshot.png";
+    let screenshot_image = image::open(screenshot_path);
 
-    let canvas_pixel_x = (canvas_location.x) as i64 + x as i64;
-    let canvas_pixel_y = (canvas_location.y) as i64 + y as i64;
+    let binding = screenshot_image.expect("REASON");
 
-    (canvas_pixel_x, canvas_pixel_y)
+    (((binding.width()) as f64 * STEP0_WIDTH) as i64, ((binding.height()) as f64 * STEP0_HEIGHT) as i64)
+
 }
+
+fn get_absolute_pixel(canvas_element: ElementRect, x: u32, y: u32)->(i64, i64){
+
+    let abs_x = (canvas_element.x) as i64 + x as i64;
+    let abs_y = (canvas_element.y) as i64 + y as i64;
+
+    (abs_x, abs_y)
+}
+
