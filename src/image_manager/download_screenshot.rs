@@ -11,7 +11,7 @@ pub async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     let iframe1 = driver.query(By::Id("ContentFrame")).first().await?;
     iframe1.wait_until().displayed().await?;
     let iframe1_location = iframe1.rect().await?;
-    println!("iframe1 = {:?}, {:?} : width, height {:?}, {:?}", iframe1_location.x, iframe1_location.y, iframe1_location.width, iframe1_location.height);
+    println!("ContentFrame = {:?}, {:?} : width, height {:?}, {:?}", iframe1_location.x, iframe1_location.y, iframe1_location.width, iframe1_location.height);
     driver.enter_frame(0).await?;
     
 
@@ -43,25 +43,16 @@ pub async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     let (x,y) = get_button_location();
     let (absolute_x, absolute_y) = get_absolute_pixel(canvas_location, x.try_into().unwrap(), y.try_into().unwrap());
 
-    // Simulate a click at the identified X and Y coordinates.
-    // driver
-    // .action_chain()
-    // .move_to(absolute_x , absolute_y)
-    // .click()
-    // .perform()
-    // .await?;
+    let final_x:i64 = (absolute_x + iframe1_location.x + iframe2_location.x + iframe3_location.x) as i64;
+    let final_y:i64 = (absolute_y + iframe1_location.y + iframe2_location.y + iframe3_location.y) as i64;
+    println!("{},{}", final_x, final_y);
 
-    let script = format!(
-        r#"
-        const canvas = arguments[0];
-        const x = {};
-        const y = {};
-        const clickEvent = new MouseEvent("click", {{ clientX: x, clientY: y }});
-        canvas.dispatchEvent(clickEvent);
-        "#,
-        absolute_x, absolute_y
-    );
-    driver.execute(&script, vec![canvas_intro.to_json()?]).await?;
+    driver
+    .action_chain()
+    .move_to(final_x, final_y)
+    .click()
+    .perform()
+    .await?;
 
     Ok(())
 }

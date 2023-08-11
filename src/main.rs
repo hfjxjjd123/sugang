@@ -12,8 +12,6 @@ async fn main() -> WebDriverResult<()> {
     Ok(())
 }
 
-// 659 16
-
 async fn one_cycle() -> WebDriverResult<()> {
     let driver: WebDriver = start_driver().await?;
     open_wise(&driver).await?;
@@ -27,12 +25,12 @@ async fn one_cycle() -> WebDriverResult<()> {
     }
     screenshot_canvas(&driver).await?;
 
-    tokio::time::sleep(Duration::from_secs(1000)).await;
+    tokio::time::sleep(Duration::from_secs(10)).await;
 
     terminate_driver(driver).await?;
     Ok(())
 }
 
-fn debugging_click(driver: &WebDriver){
+// fn debugging_click(driver: &WebDriver){
 
-}
+// }

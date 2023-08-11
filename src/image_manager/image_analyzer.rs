@@ -36,11 +36,10 @@ pub fn get_button_location() -> (i64, i64){
 
 }
 
-pub fn get_absolute_pixel(canvas_element: ElementRect, x: u32, y: u32)->(i64, i64){
+pub fn get_absolute_pixel(canvas_element: ElementRect, x: u32, y: u32)->(f64, f64){
 
-    println!("button = {:?}, {:?}", canvas_element.x, canvas_element.y);
-    let abs_x = (canvas_element.x) as i64 + x as i64;
-    let abs_y = (canvas_element.y) as i64 + y as i64;
+    let abs_x = canvas_element.x + x as f64;
+    let abs_y = canvas_element.y + y as f64;
     println!("canvas = {:?}, {:?}", abs_x, abs_y);
     (abs_x, abs_y)
 }
