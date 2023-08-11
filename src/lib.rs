@@ -1,4 +1,6 @@
 
+pub mod init_page;
+
 pub mod chrome_manager;
 pub mod redirec_sugang_canvas;
 pub mod web_exception_handler;

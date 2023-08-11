@@ -10,7 +10,7 @@ pub async fn open_wise(driver: &WebDriver) -> WebDriverResult<()> {
     Ok(())
 }
 
-pub async fn auto_login(driver: &WebDriver) -> WebDriverResult<()> {
+pub async fn login_pass(driver: &WebDriver) -> WebDriverResult<()> {
     let username_element = driver.find(By::Name("strLoginId")).await?;
     let password_element = driver.find(By::Name("strLoginPw")).await?;
     let submit_button = driver.find(By::Id("loginImg")).await?;
@@ -22,7 +22,7 @@ pub async fn auto_login(driver: &WebDriver) -> WebDriverResult<()> {
     Ok(())
 }
 
-pub async fn click_to_open_tab(driver: &WebDriver) -> WebDriverResult<()> {
+pub async fn click_sugang_menu(driver: &WebDriver) -> WebDriverResult<()> {
     
     let menu_down = driver.query(By::Id("TopMenu_수강")).first().await?;
     menu_down.wait_until().displayed().await?;
@@ -35,8 +35,7 @@ pub async fn click_to_open_tab(driver: &WebDriver) -> WebDriverResult<()> {
     Ok(())
 }
 
-pub async fn await_canvas(driver: &WebDriver) -> WebDriverResult<()> {
-    
+pub async fn await_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     let canvas_view = driver.query(By::Id("UcrTlsnAply_STUD00230_mdi_div")).first().await?;
     canvas_view.wait_until().displayed().await?;
     alert_handler(driver).await?;
