@@ -33,6 +33,8 @@ pub async fn remove_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     .perform()
     .await?;
 
+    driver.enter_default_frame().await?;
+
     Ok(())
 }
 

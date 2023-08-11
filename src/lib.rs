@@ -1,5 +1,6 @@
 
 pub mod init_page;
+pub mod iter_apply;
 
 pub mod chrome_manager;
 pub mod redirec_sugang_canvas;
