@@ -10,15 +10,12 @@ const STEP0_HEIGHT: f64 = 0.064;
 
 #[tokio::main]
 async fn main() -> WebDriverResult<()> {
-    // one_cycle().await?;
-
-    let (x,y) = get_button_location();
-    println!("{:?}, {:?}", x, y);
+    one_cycle().await?;
 
     Ok(())
 }
 
-// 660/690 16/250
+// 659 16
 
 async fn one_cycle() -> WebDriverResult<()> {
     let driver: WebDriver = start_driver().await?;
@@ -33,7 +30,7 @@ async fn one_cycle() -> WebDriverResult<()> {
     }
     screenshot_canvas(&driver).await?;
 
-    tokio::time::sleep(Duration::from_secs(5)).await;
+    tokio::time::sleep(Duration::from_secs(1000)).await;
 
     terminate_driver(driver).await?;
     Ok(())
@@ -102,13 +99,26 @@ async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
 
     let iframe1 = driver.query(By::Id("ContentFrame")).first().await?;
     iframe1.wait_until().displayed().await?;
+    let iframe1_location = iframe1.rect().await?;
+    println!("iframe1 = {:?}, {:?} : width, height {:?}, {:?}", iframe1_location.x, iframe1_location.y, iframe1_location.width, iframe1_location.height);
     driver.enter_frame(0).await?;
-    driver.enter_frame(0).await?;
+    
+
+    let iframe2_selector = By::Css("iframe.window_iframe[src*='UcrTlsnAply']");
+    let iframe2 = driver.find(iframe2_selector).await?;
+    let iframe2_location = iframe2.rect().await?;
+    println!("iframe2 = {:?}, {:?}", iframe2_location.x, iframe2_location.y);
     driver.enter_frame(0).await?;
 
-    let canvas_intro = driver.find(By::Id("TmtViewer")).await?;
-    let screenshot_data = canvas_intro.screenshot_as_png().await?;
+    //iframe3
+    let iframe3 = driver.find(By::Id("UcrTlsnAplySignPop")).await?;
+    let iframe3_location = iframe3.rect().await?;
+    println!("iframe3 = {:?}, {:?}", iframe3_location.x, iframe3_location.y);
+    driver.enter_frame(0).await?;
+    //Error: NoSuchElement("Id(TmtViewer)") 가능
+    let canvas_intro = driver.query(By::Id("TmtViewer")).first().await?;
     let canvas_location = canvas_intro.rect().await?;
+    let screenshot_data = canvas_intro.screenshot_as_png().await?;
 
     let mut file = File::create("screenshot.png")?;
     file.write_all(&screenshot_data)?;
@@ -120,15 +130,27 @@ async fn screenshot_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     //     return Err(WebDriverError::CustomError("image analysis failed".to_owned()));
     // }
     let (x,y) = get_button_location();
-    let (absolute_x, absolute_y) = get_absolute_pixel(canvas_location, x, y);
+    let (absolute_x, absolute_y) = get_absolute_pixel(canvas_location, x.try_into().unwrap(), y.try_into().unwrap());
 
     // Simulate a click at the identified X and Y coordinates.
-    driver
-    .action_chain()
-    .move_to(absolute_x , absolute_y)
-    .click()
-    .perform()
-    .await?;
+    // driver
+    // .action_chain()
+    // .move_to(absolute_x , absolute_y)
+    // .click()
+    // .perform()
+    // .await?;
+
+    let script = format!(
+        r#"
+        const canvas = arguments[0];
+        const x = {};
+        const y = {};
+        const clickEvent = new MouseEvent("click", {{ clientX: x, clientY: y }});
+        canvas.dispatchEvent(clickEvent);
+        "#,
+        absolute_x, absolute_y
+    );
+    driver.execute(&script, vec![canvas_intro.to_json()?]).await?;
 
     Ok(())
 }
@@ -166,9 +188,13 @@ fn get_button_location() -> (i64, i64){
 
 fn get_absolute_pixel(canvas_element: ElementRect, x: u32, y: u32)->(i64, i64){
 
+    println!("button = {:?}, {:?}", canvas_element.x, canvas_element.y);
     let abs_x = (canvas_element.x) as i64 + x as i64;
     let abs_y = (canvas_element.y) as i64 + y as i64;
-
+    println!("canvas = {:?}, {:?}", abs_x, abs_y);
     (abs_x, abs_y)
 }
 
+fn debugging_click(driver: &WebDriver){
+
+}
