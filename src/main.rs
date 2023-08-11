@@ -5,6 +5,8 @@ use std::io::Write;
 use image::*;
 use thirtyfour::ElementRect;
 
+use sugang::chrome_manager::*;
+
 const STEP0_WIDTH: f64 = 0.9565;
 const STEP0_HEIGHT: f64 = 0.064;
 
@@ -36,23 +38,10 @@ async fn one_cycle() -> WebDriverResult<()> {
     Ok(())
 }
 
-async fn start_driver() -> WebDriverResult<WebDriver> {
-    let _binary_path = "./chromedriver";
-    let port = 9515;
-    let caps = DesiredCapabilities::chrome();
-    let driver = WebDriver::new(&format!("http://localhost:{}", port), caps).await?;
-
-    Ok(driver)
-}
 
 async fn open_wise(driver: &WebDriver) -> WebDriverResult<()> {
     driver.goto("https://sugang.uos.ac.kr/uosdoc/login_sugang.jsp").await?;
 
-    Ok(())
-}
-
-async fn terminate_driver(driver: WebDriver) -> WebDriverResult<()> {
-    driver.quit().await?;
     Ok(())
 }
 
