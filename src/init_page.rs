@@ -1,4 +1,4 @@
-use crate::image_manager::download_screenshot::screenshot_canvas;
+use crate::image_manager::download_screenshot::*;
 use crate::redirec_sugang_canvas::await_first_canvas;
 use crate::redirec_sugang_canvas::click_sugang_menu;
 use crate::redirec_sugang_canvas::login_pass;
@@ -17,7 +17,7 @@ pub async fn initialize(driver: &WebDriver)-> WebDriverResult<()>{
         Err(WebDriverError::CmdError(_)) => println!("No problem"),
         _ => println!("ERR occur"),
     }
-    screenshot_canvas(driver).await?;
+    remove_first_canvas(driver).await?;
 
     Ok(())
 }
