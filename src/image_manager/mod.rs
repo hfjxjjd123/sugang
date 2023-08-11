@@ -1,3 +1,4 @@
 
 pub mod image_analyzer;
-pub mod download_screenshot;
+pub mod pass_iframe;
+pub mod image_screenshot;

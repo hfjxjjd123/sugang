@@ -1,4 +1,4 @@
-use crate::image_manager::download_screenshot::*;
+use crate::image_manager::pass_iframe::*;
 use crate::redirec_sugang_canvas::await_first_canvas;
 use crate::redirec_sugang_canvas::click_sugang_menu;
 use crate::redirec_sugang_canvas::login_pass;

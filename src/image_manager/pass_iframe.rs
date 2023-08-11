@@ -1,11 +1,10 @@
-use std::fs::File;
 use crate::image_manager::image_analyzer::*;
 use thirtyfour::By;
-use std::io::Write;
 use thirtyfour::error::WebDriverResult;
 use thirtyfour::WebDriver;
 use thirtyfour::prelude::*;
 use thirtyfour::ElementRect;
+use crate::image_manager::image_screenshot::screenshot_canvas;
 
 pub async fn remove_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
 
@@ -35,17 +34,6 @@ pub async fn remove_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     .await?;
 
     Ok(())
-}
-
-pub async fn screenshot_canvas(driver: &WebDriver, id: &str, image_name: &str) -> WebDriverResult<ElementRect>{
-    let canvas_intro = driver.query(By::Id(id)).first().await?;
-    let canvas_location = canvas_intro.rect().await?;
-    let screenshot_data = canvas_intro.screenshot_as_png().await?;
-
-    let mut file = File::create(image_name)?;
-    file.write_all(&screenshot_data)?;
-
-    Ok(canvas_location)
 }
 
 pub async fn pass_iframe1(driver: &WebDriver) -> WebDriverResult<ElementRect>{
