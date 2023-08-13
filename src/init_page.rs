@@ -6,6 +6,9 @@ use crate::redirec_sugang_canvas::open_wise;
 use thirtyfour::error::WebDriverResult;
 use thirtyfour::WebDriver;
 use thirtyfour::prelude::*;
+use crate::web_exception_handler::alert_handler;
+use fantoccini::error::CmdError::Standard;
+
 
 pub async fn initialize(driver: &WebDriver)-> WebDriverResult<()>{
     open_wise(driver).await?;
@@ -13,9 +16,18 @@ pub async fn initialize(driver: &WebDriver)-> WebDriverResult<()>{
     click_sugang_menu(driver).await?;
 
     match await_first_canvas(driver).await{
-        Ok(_) => println!("no problem"),
-        Err(WebDriverError::CmdError(_)) => println!("No problem"),
-        _ => println!("ERR occur"),
+        Ok(_) => (),
+        Err(WebDriverError::CmdError(Standard(wd))) => {
+            if wd.error() == "unexpected alert open" {
+                alert_handler(driver);
+                await_first_canvas(driver).await?;
+            } else{
+                return Err(WebDriverError::CustomError("Unexpected".to_owned()));
+            }
+        }
+        _ => {
+            return Err(WebDriverError::CustomError("Unexpected".to_owned()));
+        }
     }
     remove_first_canvas(driver).await?;
 
