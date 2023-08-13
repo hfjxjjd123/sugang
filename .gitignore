@@ -1,1 +1,3 @@
 /target
+# User Infomation
+src/user_info.rs

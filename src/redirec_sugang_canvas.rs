@@ -3,6 +3,7 @@ use thirtyfour::error::WebDriverResult;
 use thirtyfour::WebDriver;
 use thirtyfour::prelude::*;
 use crate::web_exception_handler::alert_handler;
+use crate::user_info::*;
 
 pub async fn open_wise(driver: &WebDriver) -> WebDriverResult<()> {
     driver.goto("https://sugang.uos.ac.kr/uosdoc/login_sugang.jsp").await?;
@@ -15,8 +16,8 @@ pub async fn login_pass(driver: &WebDriver) -> WebDriverResult<()> {
     let password_element = driver.find(By::Name("strLoginPw")).await?;
     let submit_button = driver.find(By::Id("loginImg")).await?;
 
-    username_element.send_keys("hfjxjjd123").await?;
-    password_element.send_keys("sksms016526!").await?;
+    username_element.send_keys(ID).await?;
+    password_element.send_keys(PASSWORD).await?;
     submit_button.click().await?;
 
     Ok(())

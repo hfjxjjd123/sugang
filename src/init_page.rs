@@ -1,8 +1,5 @@
 use crate::image_manager::pass_iframe::*;
-use crate::redirec_sugang_canvas::await_first_canvas;
-use crate::redirec_sugang_canvas::click_sugang_menu;
-use crate::redirec_sugang_canvas::login_pass;
-use crate::redirec_sugang_canvas::open_wise;
+use crate::redirec_sugang_canvas::*;
 use thirtyfour::error::WebDriverResult;
 use thirtyfour::WebDriver;
 use thirtyfour::prelude::*;
