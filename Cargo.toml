@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+fantoccini = "0.19.3"
 image = "0.24.6"
 selenium_webdriver = "0.1.7"
 thirtyfour = "0.31.0"
