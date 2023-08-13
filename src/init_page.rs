@@ -8,6 +8,7 @@ use thirtyfour::WebDriver;
 use thirtyfour::prelude::*;
 use crate::web_exception_handler::alert_handler;
 use fantoccini::error::CmdError::Standard;
+use crate::iter_apply::initial_apply_canvas;
 
 
 pub async fn initialize(driver: &WebDriver)-> WebDriverResult<()>{
@@ -32,4 +33,10 @@ pub async fn initialize(driver: &WebDriver)-> WebDriverResult<()>{
     remove_first_canvas(driver).await?;
 
     Ok(())
+}
+
+pub async fn analyze_elements_location(driver: &WebDriver, num_of_basket: Vec<i32>)->WebDriverResult<Vec<(i64,i64)>>{
+    let targets: Vec<(i64, i64)> = initial_apply_canvas(&driver, num_of_basket).await?;
+
+    Ok(targets)
 }
