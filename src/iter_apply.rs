@@ -4,7 +4,7 @@ use crate::image_manager::image_screenshot::screenshot_canvas;
 use crate::image_manager::image_analyzer::*;
 use crate::image_manager::pass_iframe::*;
 
-pub async fn initial_apply_canvas(driver: &WebDriver, target_index: Vec<i32>) -> WebDriverResult<(i64, i64)>{
+pub async fn initial_apply_canvas(driver: &WebDriver, target_index: Vec<i32>) -> WebDriverResult<Vec<(i64, i64)>>{
     let mut coordinates: Vec<(i64, i64)> = vec![];
 
     let iframe1_location = pass_iframe1(&driver).await?;

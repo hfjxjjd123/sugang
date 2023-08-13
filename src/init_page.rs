@@ -19,7 +19,7 @@ pub async fn initialize(driver: &WebDriver)-> WebDriverResult<()>{
         Ok(_) => (),
         Err(WebDriverError::CmdError(Standard(wd))) => {
             if wd.error() == "unexpected alert open" {
-                alert_handler(driver);
+                alert_handler(driver).await?;
                 await_first_canvas(driver).await?;
             } else{
                 return Err(WebDriverError::CustomError("Unexpected".to_owned()));
