@@ -83,7 +83,7 @@ pub async fn iteration(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebDriverR
     let mut count = 0;
     let count_unit = targets.len() + 1;
     loop {
-        if count > 80 {
+        if count > 1000 {
             break;
         }
         one_cycle_apply(&driver, &targets).await?;
