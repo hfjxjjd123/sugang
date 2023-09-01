@@ -13,6 +13,7 @@ pub async fn initialize(driver: &WebDriver)-> WebDriverResult<()>{
     login_pass(driver).await?;
     click_sugang_menu(driver).await?;
 
+    //await_first_canvas 결백
     match await_first_canvas(driver).await{
         Ok(_) => (),
         Err(WebDriverError::CmdError(Standard(wd))) => {

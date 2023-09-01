@@ -4,6 +4,7 @@ use thirtyfour::WebDriver;
 use thirtyfour::prelude::*;
 use crate::web_exception_handler::alert_handler;
 use crate::user_info::*;
+use tokio::time::Duration;
 
 pub async fn open_wise(driver: &WebDriver) -> WebDriverResult<()> {
     driver.goto("https://sugang.uos.ac.kr/uosdoc/login_sugang.jsp").await?;
@@ -37,9 +38,11 @@ pub async fn click_sugang_menu(driver: &WebDriver) -> WebDriverResult<()> {
 }
 
 pub async fn await_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
-    let canvas_view = driver.query(By::Id("UcrTlsnAply_STUD00230_mdi_div")).first().await?;
+    driver.enter_frame(0).await?;
+    let canvas_view = driver.query(By::Id("UcrTlsnAply_STUD00230")).first().await?;
     canvas_view.wait_until().displayed().await?;
+    tokio::time::sleep(Duration::from_secs(2)).await;
     alert_handler(driver).await?;
-
+    driver.enter_default_frame().await?;
     Ok(())
 }

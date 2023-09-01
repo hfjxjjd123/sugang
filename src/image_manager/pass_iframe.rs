@@ -7,10 +7,10 @@ use thirtyfour::ElementRect;
 use crate::image_manager::image_screenshot::screenshot_canvas;
 
 pub async fn remove_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
-
     //pass iframe
     let iframe1_location = pass_iframe1(&driver).await?;
     driver.enter_frame(0).await?;
+    println!("Tracking I1");
     let iframe2_location = pass_iframe2(&driver).await?;
     driver.enter_frame(0).await?;
     let iframe3_location = pass_iframe3(&driver).await?;
