@@ -15,6 +15,7 @@ async fn main() -> WebDriverResult<()> {
     tokio::time::sleep(Duration::from_secs(10)).await;
     terminate_driver(driver).await?;
     Ok(())
+    
 }
 
 
