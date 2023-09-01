@@ -28,8 +28,8 @@ pub async fn initial_apply_canvas(driver: &WebDriver, target_index: Vec<i32>) ->
     }
 
     let query_button = query_button_location();
-    let query_button_x = (apply_canvas.x + query_button.0 as f64) as i64;
-    let query_button_y = (apply_canvas.y + query_button.1 as f64) as i64;
+    let query_button_x = (apply_canvas.x + query_button.0 as f64 + iframe1_location.x + iframe2_location.x) as i64;
+    let query_button_y = (apply_canvas.y + query_button.1 as f64 +iframe1_location.y + iframe2_location.y) as i64;
     coordinates.push((query_button_x, query_button_y));
 
     Ok(coordinates)
@@ -37,7 +37,8 @@ pub async fn initial_apply_canvas(driver: &WebDriver, target_index: Vec<i32>) ->
 }
 
 pub async fn one_cycle_apply(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebDriverResult<()>{
-    for target in targets{
+    for i in 0..(targets.len()-1){
+        let target = &targets[i];
         let click_apply = click_apply_button(driver, target).await;
 
         match click_apply{
@@ -65,6 +66,7 @@ pub async fn click_apply_button(driver: &WebDriver, target: &(i64, i64))->WebDri
                 .click()
                 .perform()
                 .await?;
+    println!("Desirable Coord: {:?},{:?}", target.0, target.1);
     Ok(())
 }
 
@@ -74,11 +76,13 @@ pub async fn click_reload_button(driver: &WebDriver, location: &(i64,i64))->WebD
                 .click()
                 .perform()
                 .await?;
+    println!("Not Desirable: {:?},{:?}", location.0, location.1);
     Ok(())
 }
 
 pub async fn iteration(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebDriverResult<()>{
-    let reload_button = targets[0];
+    let reload_button = targets.last().unwrap();
+    println!("{:?},{:?}", &reload_button.0, &reload_button.1);
     let mut count = 0;
     let count_unit = targets.len() + 1;
     loop {
@@ -89,7 +93,7 @@ pub async fn iteration(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebDriverR
         one_cycle_apply(&driver, &targets).await?;
         click_reload_button(&driver, &reload_button).await?;
 
-        tokio::time::sleep(Duration::from_secs(1)).await;
+        tokio::time::sleep(Duration::from_secs(5)).await;
         count += count_unit;
     }
 
