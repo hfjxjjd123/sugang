@@ -81,7 +81,7 @@ pub async fn iteration(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebDriverR
     let reload_button = targets[0];
     let mut count = 0;
     loop {
-        if count == 20 {
+        if count == 24 {
             break;
         }
 
