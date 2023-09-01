@@ -81,14 +81,14 @@ pub async fn iteration(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebDriverR
     let reload_button = targets[0];
     let mut count = 0;
     loop {
-        if count == 10 {
+        if count == 20 {
             break;
         }
 
         one_cycle_apply(&driver, &targets).await?;
         click_reload_button(&driver, &reload_button).await?;
 
-        tokio::time::sleep(Duration::from_secs(2)).await;
+        tokio::time::sleep(Duration::from_secs(1)).await;
         count += 1;
     }
 
