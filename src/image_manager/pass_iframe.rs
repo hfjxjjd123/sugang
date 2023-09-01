@@ -10,7 +10,6 @@ pub async fn remove_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
     //pass iframe
     let iframe1_location = pass_iframe1(&driver).await?;
     driver.enter_frame(0).await?;
-    println!("Tracking I1");
     let iframe2_location = pass_iframe2(&driver).await?;
     driver.enter_frame(0).await?;
     let iframe3_location = pass_iframe3(&driver).await?;
@@ -24,7 +23,7 @@ pub async fn remove_first_canvas(driver: &WebDriver) -> WebDriverResult<()> {
 
     let final_x:i64 = (absolute_x + iframe1_location.x + iframe2_location.x + iframe3_location.x) as i64;
     let final_y:i64 = (absolute_y + iframe1_location.y + iframe2_location.y + iframe3_location.y) as i64;
-    println!("{},{}", final_x, final_y);
+
 
     driver
     .action_chain()

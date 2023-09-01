@@ -48,7 +48,6 @@ pub fn get_absolute_pixel(canvas_element: ElementRect, x: u32, y: u32)->(f64, f6
 
     let abs_x = canvas_element.x + x as f64;
     let abs_y = canvas_element.y + y as f64;
-    println!("canvas = {:?}, {:?}", abs_x, abs_y);
     (abs_x, abs_y)
 }
 
