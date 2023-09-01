@@ -23,7 +23,6 @@ async fn avoid_macro()->WebDriverResult<()>{
     iteration(&driver, &elements).await?;
     tokio::time::sleep(Duration::from_secs(2)).await;
     terminate_driver(driver).await?;
-    println!("One Time");
     Ok(())
 }
 

@@ -56,7 +56,6 @@ pub async fn one_cycle_apply(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebD
             }
         }
         alert_handler(driver).await?;
-        println!("Button {:?}th clicked", i);
     }
     Ok(())
 }
@@ -76,7 +75,6 @@ pub async fn click_reload_button(driver: &WebDriver, location: &(i64,i64))->WebD
                 .click()
                 .perform()
                 .await?;
-    println!("Reload: {:?},{:?}", location.0, location.1);
     Ok(())
 }
 
@@ -90,7 +88,7 @@ pub async fn iteration(driver: &WebDriver, targets: &Vec<(i64,i64)>)->WebDriverR
         }
         one_cycle_apply(&driver, &targets).await?;
         click_reload_button(&driver, &reload_button).await?;
-        tokio::time::sleep(Duration::from_secs(5)).await;
+        tokio::time::sleep(Duration::from_secs(1)).await;
         count += count_unit;
     }
 
